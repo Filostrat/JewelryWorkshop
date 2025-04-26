@@ -1,0 +1,178 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-family: 'Agency FB';
+    padding-top: 70px;
+}
+.custom-header {
+    z-index: 1000;
+    background-color: black;
+}
+.fixed-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+/*tab navigation*/
+
+.nav-tabs li a.active {
+    border: 4px solid black;
+    color: white;
+    border-color: white !important;
+}
+.login-logout-card .card-header {
+    padding: 0px 0px 12px 0px;
+    border: 4px solid black;
+    border: 4px solid black;
+    border-radius: 0px !important;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    transition: background-color 0.3s, color 0.3s,border 0.3s;
+}
+    .login-logout-card .card-header:hover {
+        border: 4px solid black;
+        background-color: white;
+        color: black;
+    }
+
+.login-logout-card ul.nav-tabs {
+    margin: 0px 0px -12px 0px;
+    border-top: 0px solid !important;
+}
+
+.login-logout-card li.nav-item {
+    width: 50%;
+    border-top: 0px solid !important;
+}
+
+.login-logout-card a.nav-link {
+    font-size: 1rem;
+    color: #495057;
+    text-align: center;
+    padding: 1rem;
+    border: 4px solid black;
+    background-color: black;
+    color: white;
+    border-radius: 0px;
+}
+
+.login-logout-card .card-body {
+    padding: 10px 20px;
+    border-radius: 0px;
+    border-left: 4px solid black;
+    border-right: 4px solid black;
+    border-bottom: 4px solid black;
+}
+.login-register-button {
+    background-color: black;
+    color: white;
+    border-radius: 0;
+    text-align: center;
+    width: 100%;
+    height: 5vh;
+    border: 4px solid black;
+    padding: 5px;
+    font-size: 20px;
+    display: flex;
+    height: 7vh;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s,border 0.3s;
+}
+    .login-register-button:hover {
+        /*background-color: #FF007F;*/
+        background-color: white;
+        color: black;
+    }
+.custom-input {
+    width: 100%;
+    height: 7vh;
+    font-size: 20px;
+    border-radius: 0 ;
+    border: 4px solid black;
+    text-align: center;
+}
+
+.checkcontainer {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkcontainer input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 33px;
+    width: 33px;
+    background-color: #fff;
+    border: 2px black solid;
+}
+
+/* On mouse-over, add a grey background color */
+.checkcontainer:hover input ~ .checkmark {
+    background-color: #fff;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkcontainer input:checked ~ .checkmark {
+    background-color: black;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.checkcontainer input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkcontainer .checkmark:after {
+    left: 9px;
+    top: 4px;
+    width: 11px;
+    height: 15px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(35deg);
+    -ms-transform: rotate(35deg);
+    transform: rotate(35deg);
+}

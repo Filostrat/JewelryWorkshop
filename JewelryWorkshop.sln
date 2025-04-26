@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34202.233
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JewelryWorkshop", "JewelryWorkshop\JewelryWorkshop.csproj", "{94501EAE-DB6B-4F62-BB1C-81E5CEFB5729}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{6618F9CF-01B2-4CC0-AFFC-100C558DA82D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94501EAE-DB6B-4F62-BB1C-81E5CEFB5729}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94501EAE-DB6B-4F62-BB1C-81E5CEFB5729}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94501EAE-DB6B-4F62-BB1C-81E5CEFB5729}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94501EAE-DB6B-4F62-BB1C-81E5CEFB5729}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6618F9CF-01B2-4CC0-AFFC-100C558DA82D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6618F9CF-01B2-4CC0-AFFC-100C558DA82D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6618F9CF-01B2-4CC0-AFFC-100C558DA82D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6618F9CF-01B2-4CC0-AFFC-100C558DA82D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {836B35D6-4AD9-4F71-A701-36707CB11729}
+	EndGlobalSection
+EndGlobal

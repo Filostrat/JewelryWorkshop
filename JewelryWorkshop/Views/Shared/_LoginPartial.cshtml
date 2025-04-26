@@ -1,0 +1,47 @@
+﻿<style>
+    .nav-link {
+        font-size : 25px;
+        border: 3px solid black;
+        transition: border 0.3s;
+    }
+
+        .nav-link:hover {
+            border: 3px solid white;
+        }
+</style>
+
+
+@using Microsoft.AspNetCore.Identity
+@using JewelryWorkshop.Data
+
+@inject SignInManager<JewelryWorkshopUser> SignInManager
+@inject UserManager<JewelryWorkshopUser> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    var SignedInUser = await UserManager.GetUserAsync(User);
+
+    <li class="nav-item">
+        <a id="manage" class="nav-link text-white" style="width: 150px; text-align:center;" asp-controller="ShoppingList" title="Manage">
+            Profile
+        </a>
+    </li>
+    <li class="nav-item">
+        <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button id="logout" type="submit" class="nav-link text-white" style="background-color:transparent; width: 150px;">Logout</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-white" style="width: 150px; text-align:center;" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" style="width: 150px; text-align:center;" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>       
+}
+</ul>
+
+

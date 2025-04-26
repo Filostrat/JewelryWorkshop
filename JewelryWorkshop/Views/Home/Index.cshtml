@@ -1,0 +1,340 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@model List<DAL.Models.ProductsType>;
+
+<style>
+    .custom-select {
+        position: relative;
+        display: inline-block;
+        min-width: 300px;
+        font-size: 30px;
+        margin-right: 20px;
+    }
+
+    .select-header {
+        cursor: pointer;
+        padding: 10px;
+        background-color:white;
+        border: 3px solid black;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .options-container {
+        display: none;
+        position: absolute;
+        min-width: 300px;
+        border: 3px solid black;
+        border-top: none;
+        background-color: white;
+        z-index: 1;
+    }
+
+    .option {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+        .option:hover {
+            text-decoration:underline;
+        }
+
+    .arrow {
+        transition: transform 0.3s ease;
+    }
+
+    .arrow-up {
+        transform: rotate(180deg);
+    }
+
+    .carousel {
+        display: none;
+    }
+
+    .cart-container {
+        border: 3px solid black;
+        border-image: black;
+        color: black !important;
+        -webkit-mask: conic-gradient(from 180deg at top 8px right 8px, #000 90deg,#000 0) var(--_i,200%) 0 /200% var(--_i,8px) border-box no-repeat, conic-gradient(at bottom 8px left 8px, #000 90deg,#000 0) 0 var(--_i,200%)/var(--_i,8px) 200% border-box no-repeat, linear-gradient(#000 0 0) padding-box no-repeat;
+        transition: .3s, -webkit-mask-position .3s .3s;
+    }
+
+        .cart-container:hover {
+            --_i: 100%;
+            color: black;
+            transition: .3s, -webkit-mask-size .3s .3s;
+        }
+
+            .cart-container:hover .carousel {
+                display: block;
+            }
+
+            .cart-container:hover .image-container {
+                display: none;
+            }
+
+    .cart-link {
+        margin: 10px auto;
+        width: 80%;
+        text-align: center;
+        font-size: 18px;
+    }
+
+        .cart-link a {
+            background-color: black;
+            color: white;
+            padding: 25px;
+            height: 2vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s,border 0.3s;
+            border: 3px solid black;
+        }
+
+            .cart-link a:hover {
+                /*background-color: #FF007F;*/
+                background-color: white;
+                color: black;
+            }
+
+    .price {
+        float: left;
+        font-size: 18px;
+        margin-right: auto;
+    }
+
+    .button {
+        font-size: 30px;
+        margin-right: 20px;
+        background-color: white;
+        color: black;
+        text-decoration: none;
+        border: 3px solid black;
+        transition: background-color 0.3s, color 0.3s, text-decoration 0.3s;
+        display: inline-block;
+        padding: 10px;
+        min-width: 250px;
+        text-align: center;
+    }
+
+    .button:hover {
+        background-color: black;
+        color: white;
+    }
+
+    .priceInput{
+        border: 3px solid black;
+        width: 100px;
+        height: 65px;
+        font-size: 30px;
+    }
+
+        .priceInput:focus {
+            border-radius: 0px;
+            outline: none;
+        }
+</style>
+<script>
+
+    $(document).ready(function () {
+        $('.cart-container').on('mouseenter', function () {
+            var carouselId = $(this).find('.carousel').attr('id');
+            $('#' + carouselId).carousel(0);
+            setTimeout(function () {
+                $('#' + carouselId).carousel('cycle');
+            }, 1000);
+        }).on('mouseleave', function () {
+            var carouselId = $(this).find('.carousel').attr('id');
+            $('#' + carouselId).carousel(0);
+        });
+    });
+
+    function toggleDropdown(dropdownId) {
+        var optionsContainer = document.getElementById(dropdownId).querySelector('.options-container');
+        var arrow = document.getElementById(dropdownId).querySelector('.arrow');
+        var isExpanded = optionsContainer.style.display === 'block';
+
+        optionsContainer.style.display = isExpanded ? 'none' : 'block';
+        arrow.classList.toggle('arrow-up', !isExpanded);
+
+        if (!isExpanded) {
+            window.addEventListener('click', function (event) {
+                closeDropdownOutside(event, dropdownId);
+            });
+        } else {
+            window.removeEventListener('click', function (event) {
+                closeDropdownOutside(event, dropdownId);
+            });
+        }
+    }
+
+    function selectOption(optionValue, dropdownId) {
+        var selectedValue = document.getElementById(dropdownId).querySelector('#selectedValue');
+        var selectedInput = document.getElementById(dropdownId).querySelector('#selectedInput');
+
+        selectedValue.textContent = optionValue;
+        selectedInput.value = optionValue;
+        toggleDropdown(dropdownId);
+    }
+
+    function closeDropdownOutside(event, dropdownId) {
+        var dropdown = document.getElementById(dropdownId);
+        if (!dropdown.contains(event.target)) {
+            var optionsContainer = dropdown.querySelector('.options-container');
+            var arrow = dropdown.querySelector('.arrow');
+
+            optionsContainer.style.display = 'none';
+            arrow.classList.remove('arrow-up');
+
+            window.removeEventListener('click', function (event) {
+                closeDropdownOutside(event, dropdownId);
+            });
+        }
+    }
+</script>
+
+
+<div class="row" style="margin-top:100px;">
+    <div class="row" style="border-bottom: 3px solid black; padding:15px;">     
+        <form asp-action="Index">
+            <div class="row" style="display: flex; padding:15px;">
+                <div class="col-md-8" style="display: flex;">
+                    <div>
+                        <div class="custom-select" id="materialdropdown">
+                            <div class="select-header" onclick="toggleDropdown('materialdropdown')">
+                                <span id="selectedValue">@ViewBag.SelectMaterial</span> <span class="arrow" id="arrow">&#9660;</span>
+                            </div>
+                            <div class="options-container">                        
+                                @foreach (Material item in @ViewBag.Materials)
+                                {
+                                    <div class="option" onclick="selectOption('@item.MaterialName', 'materialdropdown')" 
+                                        data-value="@item.MaterialName" @(item.MaterialName == ViewBag.SelectMaterial ? "selected" : "")>
+                                        @item.MaterialName
+                                    </div>
+                                }
+                            </div>
+                            <input type="hidden" id="selectedInput" name="material" value="@ViewBag.SelectMaterial">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="custom-select" id="stonesWeightDropdown">
+                            <div class="select-header" onclick="toggleDropdown('stonesWeightDropdown')">
+                                @{
+                                    var viewBagSelectStonesWeight = Convert.ToString(ViewBag.SelectStonesWeight);
+                                }
+                                <span id="selectedValue">@viewBagSelectStonesWeight</span> <span class="arrow" id="arrow">&#9660;</span>
+                            </div>
+                            <div class="options-container">
+                                @foreach (StonesWeight item in @ViewBag.StonesWeight)
+                                {
+                                    var stonesWeightsString = Convert.ToString(item.StonesWeights);
+                                
+
+                                    <div class="option" onclick="selectOption('@item.StonesWeights.ToString()', 'stonesWeightDropdown')"
+                                            data-value="@item.StonesWeights.ToString()" @(stonesWeightsString == viewBagSelectStonesWeight ? "selected" : "")>
+                                        @item.StonesWeights.ToString()
+                                    </div>
+                                }
+                            </div>
+                            <input type="hidden" id="selectedInput" name="stonesWeight" value="@ViewBag.SelectStonesWeight">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="custom-select" id="preciousStonesDropdown">
+                            <div class="select-header" onclick="toggleDropdown('preciousStonesDropdown')">
+                                <span id="selectedValue">@ViewBag.SelectPreciousStone</span> <span class="arrow" id="arrow">&#9660;</span>
+                            </div>
+                            <div class="options-container">
+                                @foreach (PreciousStone item in @ViewBag.PreciousStones)
+                                {
+                                    <div class="option" onclick="selectOption('@item.PreciousStoneName', 'preciousStonesDropdown')"
+                                        data-value="@item.PreciousStoneName" @(item.PreciousStoneName == ViewBag.SelectPreciousStone ? "selected" : "")>
+                                        @item.PreciousStoneName
+                                    </div>
+                                }
+                            </div>
+                            <input type="hidden" id="selectedInput" name="preciousStone" value="@ViewBag.SelectPreciousStone">
+                        </div>
+                    </div>    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-4" style="margin:0; padding:0;">
+                                    <h3>Min price</h3>
+                                </div>
+                                <div class="col-md-7" style="margin:0; padding:0;">
+                                    <input type="number" style="height:69.2px" id="minPrice" name="minPrice" value=@ViewBag.SelectMinPrice class="priceInput" min="0" step="100" max="10000">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-4" style="margin:0; padding:0;">
+                                    <h3>Max price</h3>
+                                </div>
+                                <div class="col-md-7" style="margin:0; padding:0;">
+                                    <input type="number" style="height:69.2px" id="maxPrice" name="maxPrice" value=@ViewBag.SelectMaxPrice class="priceInput" min="0" step="100" max="10000">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="col-md-4">
+                    <button type="submit" class="button">Filter</button>
+                    <a asp-action="Index" class="button">Clear All Filters</a>
+                </div>
+            </div>
+        </form>      
+    </div>
+     
+    @foreach (ProductsType item in Model)
+        {
+        <div class="col-lg-3 col-md-4 col-sm-11" style="background-color: transparent; aspect-ratio: 8 / 10; padding:4px;">
+            <div class="cart-container" style="height:100%; padding:4px;">
+                <div class="carousel-item active">
+                    <img src="data:image/jpeg;base64, @Convert.ToBase64String(item.Photos.FirstOrDefault().PhotoData)" class="d-block w-100">
+                </div>
+
+                <div id="carouselItem@(item.ProductTypeId.ToString())" class="carousel slide rounded carousel-dark" data-bs-ride="carousel" data-bs-interval="1000">
+                    <div class="carousel-inner">
+                            @{
+                            int i = 0;
+                            string status = "active";
+                        }
+                        @foreach (var photo in item.Photos)
+                            {
+                            <div class="carousel-item @status">
+                                <img src="data:image/jpeg;base64, @Convert.ToBase64String(photo.PhotoData)" class="d-block w-100">
+                            </div>
+                            i++;
+                            if(i > 0 )
+                                {
+                            status = string.Empty;
+                        }
+                    }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselItem@(item.ProductTypeId.ToString())" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselItem@(item.ProductTypeId.ToString())" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                        <div class="cart-link">
+                        <p>@(item.ProductTypeName)</p>                        
+                    <a asp-action="Index" asp-controller="Product" asp-route-id="@item.ProductTypeId">                        
+                            <span class="price"> Start with @item.MinPrice?.ToString("N2")$</span> <span>View Details</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        </div>
+    }
+</div>

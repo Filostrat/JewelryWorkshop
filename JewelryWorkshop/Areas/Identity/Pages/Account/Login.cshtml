@@ -1,0 +1,33 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "~/Areas/Identity/Pages/_AuthLayout.cshtml";
+}
+<form id="account" method="post">
+    <h1>Log in</h1>
+    <hr style="height: 4px; background-color: black; border: none;opacity: 1;">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <div class="form-floating mb-3">
+        <input asp-for="Input.Email" class="custom-input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+    <div class="form-floating mb-3">
+        <input asp-for="Input.Password" class="custom-input autocomplete="current-password" aria-required="true" placeholder="password" />
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+    </div>
+    <div class="checkbox mb-3">
+        <label asp-for="Input.RememberMe" class="checkcontainer">
+            <input asp-for="Input.RememberMe" type="checkbox" />
+            <span class="checkmark"></span>
+            @Html.DisplayNameFor(m => m.Input.RememberMe)
+        </label>
+    </div>
+    <div>
+        <button id="login-submit" type="submit" class="login-register-button">Log in</button>
+    </div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

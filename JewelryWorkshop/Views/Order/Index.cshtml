@@ -1,0 +1,77 @@
+﻿@model DAL.Models.AspNetUser;
+
+<style>
+    .Go {
+        font-size: 70px;
+        background-color: white;
+        color: black;
+        text-decoration: none;
+        display: inline-block;
+        width: 460px;
+        text-align: left;
+        transition: text-align 3s, background-color 0.3s, color 0.3s, text-decoration 0.3s;
+    }
+
+        .Go:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<div style="margin-top: 100px;">
+    <a asp-action="Index" asp-controller="ShoppingList">
+        <div class="Go">Go to ShoppingList</div>
+    </a>
+    <div class="row align-items-center">
+        <div class="col-md-9">
+            <div style="font-size:60px;">Orders</div>
+            <h1>Welcome @Model.Email</h1>
+        </div>
+        <div class="col-md-3 d-flex align-items-center">
+            @{
+                var totalPrice = ViewBag.OrderSum;
+                string formattedTotalPrice = $"${totalPrice:N2}";
+            }
+            <div style="font-size:60px;">Total Price: @formattedTotalPrice</div>
+            <div style="font-size:60px;">Total Orders:  @ViewBag.OrderCount </div>
+        </div>
+    </div> 
+    @foreach (var order in Model.Orders)
+    {
+        <div class="row" style="border-top: 4px solid black; padding: 10px;">
+            <h1>Order Date: @order.OrderDate</h1>
+            @{
+                string formattedOrderAmount = $"${@order.OrderAmount:N2}";
+            }
+            <h1>Order Amount: @formattedOrderAmount</h1>
+            @foreach (var ordersProduct in order.OrdersProducts)
+                {
+                <div class ="col-lg-4 col-md-4 col-sm-11" style="padding: 10px;">
+                    <div class="row" style="padding: 10px; margin:15px;">
+                        <div class="col-md-6 mt-3" style="padding: 0;">
+                            <img src="data:image/jpeg;base64, @Convert.ToBase64String(ordersProduct.Product.ProductType.Photos.FirstOrDefault().PhotoData)" class="d-block w-100">
+                        </div>
+                        <div class="col-md-6 mt-3" style="padding: 0;">
+                            <h1>@ordersProduct.Product.ProductType.ProductTypeName</h1>
+                            <h2>Size: @ordersProduct.Product.Size.SizeName</h2>
+                            <h2>Material: @ordersProduct.Product.Material.MaterialName</h2>
+                            @if (ordersProduct.Product.StoneWeight != null)
+                            {
+                                <h2>Stone Weight: @ordersProduct.Product.StoneWeight.StonesWeights</h2>
+                            }
+                            @if (ordersProduct.Product.PreciousStone != null)
+                            {
+                                <h2>Precious Stone: @ordersProduct.Product.PreciousStone.PreciousStoneName</h2>
+                            }
+                            <h2>Quantity: @ordersProduct.Quantity</h2>
+                            @{
+                                var price = ordersProduct.Product.Price * ordersProduct.Quantity;
+                                string formattedPrice = $"${price:N2}";
+                            }
+                            <h2>Price: @formattedPrice</h2>
+                        </div>
+                    </div>
+                </div>        
+            }
+        </div>
+    }
+</div>

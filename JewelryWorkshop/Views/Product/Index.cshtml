@@ -1,0 +1,424 @@
+﻿
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+
+
+
+
+@using Microsoft.AspNetCore.Mvc
+@model DAL.Models.ProductsType;
+
+@{
+    var photoList = Model.Photos.ToArray();
+}
+
+
+<style>
+    .buy-button {
+        background-color: black;
+        width:100%;
+        color: white;
+        padding: 25px;
+        height: 5vh;
+        font-size: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s,border 0.3s;
+        border: 3px solid black;
+    }
+        .buy-button:hover {
+            background-color: white;
+            color: black;
+        }
+
+    .dropdown {
+        border-top: 3px solid black;
+        border-bottom: 3px solid black;     
+        padding: 10px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    .dropdown-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-in-out;
+    }
+
+        .dropdown-content.active {
+            max-height: 1000px; 
+            transition: max-height 0.3s ease-in-out;
+        }
+
+    .dropdown-trigger {
+        margin: 0;
+        cursor: pointer;
+        font-size: 25px;
+    }
+
+    .arrow {
+        transition: transform 0.3s ease-in-out;
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+        .arrow.up {
+            transform: rotate(180deg);
+        }
+
+    .radio-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .radio-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .radio-label {
+        cursor: pointer;
+        flex-basis: calc(50% - 8px);
+        display: flex;
+        align-items: center;
+        font-size: 18px;
+        justify-content: center;
+        padding: 10px;
+        margin: 3px;
+        border: 3px solid black;
+        border-image: black;
+        color: black !important;
+        -webkit-mask: conic-gradient(from 180deg at top 8px right 8px, #000 90deg,#000 0) var(--_i,200%) 0 /200% var(--_i,8px) border-box no-repeat, conic-gradient(at bottom 8px left 8px, #000 90deg,#000 0) 0 var(--_i,200%)/var(--_i,8px) 200% border-box no-repeat, linear-gradient(#000 0 0) padding-box no-repeat;
+        transition: .3s, -webkit-mask-position .3s .3s;
+    }
+
+        .radio-label input[type="radio"] {
+            display: none; 
+        }
+
+        .radio-label span {
+            color: black;
+        }
+
+        .radio-label:hover {
+            --_i: 100%;
+            color: black;
+            transition: .3s, -webkit-mask-size .3s .3s;
+        }
+
+        .radio-label.checked {
+            border-color: black; 
+        }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
+
+    .number-input {
+        display: inline-flex;
+    }
+
+        .number-input,
+        .number-input * {
+            box-sizing: border-box;
+        }
+
+            .number-input button {
+                outline: none;
+                -webkit-appearance: none;
+                background-color: transparent;
+                border: none;
+                align-items: center;
+                justify-content: center;
+                width: 3rem;
+                height: 3rem;
+                cursor: pointer;
+                margin: 0;
+                position: relative;
+            }
+
+                .number-input button:after {
+                    display: inline-block;
+                    position: absolute;
+                    font-family: "Font Awesome 5 Free";
+                    font-weight: 900;
+                    content: '\f077';
+                    transform: translate(-50%, -50%) rotate(180deg);
+                }
+
+                .number-input button.plus:after {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+
+            .number-input input[type=number] {
+                max-width: 5rem;
+                padding: .5rem;
+                border: solid black;
+                border-width: 0 2px;
+                font-size: 1rem;
+                height: 3rem;
+                font-weight: bold;
+                text-align: center;
+                color: black;
+                outline: none;
+            }
+</style>
+<script>
+    $(document).ready(function () {
+        // Відслідковуємо кліки на "Find Your Size"
+        $(".dropdown-trigger").click(function () {
+            var dropdown = $(this).parent('.dropdown');
+            var dropdownContent = dropdown.find(".dropdown-content");
+            var arrow = dropdown.find(".arrow");
+
+            if (dropdownContent.hasClass("active")) {
+                dropdownContent.removeClass("active");
+                dropdownContent.css("max-height", "0");
+                arrow.removeClass("up"); // Змінюємо стрілку на вниз
+            } else {
+                dropdownContent.addClass("active");
+                var contentHeight = dropdownContent.prop("scrollHeight");
+                dropdownContent.css("max-height", contentHeight + "px");
+                arrow.addClass("up"); // Змінюємо стрілку на вгору
+            }
+        });
+
+        // Позначте перший обраний елемент в кожному списку при завантаженні сторінки
+        $(".radio-container input[type='radio']:checked").each(function () {
+            $(this).closest(".radio-label").addClass("checked");
+            $(this).closest(".radio-label").css("background-color", "black");
+            $(this).closest(".radio-label").find("span").css("color", "white");
+        });
+
+        // Відслідковуємо кліки на радіокнопках в кожному списку
+        $(".radio-container input[type='radio']").click(function () {
+            // Знімаємо обрання з усіх радіокнопок в поточному списку
+            var currentList = $(this).closest(".radio-container");
+            currentList.find("input[type='radio']").prop("checked", false);
+            currentList.find(".radio-label").removeClass("checked");
+
+            // Видалення стилів з попередньої обраної радіокнопки
+            currentList.find(".radio-label").css("background-color", "");
+            currentList.find(".radio-label").css("border", "3px solid black");
+            currentList.find(".radio-label span").css("color", "black");
+
+            // Встановлюємо обрання для поточної радіокнопки
+            $(this).prop("checked", true);
+            $(this).closest(".radio-label").addClass("checked");
+
+            // Змінюємо стиль обраної радіокнопки
+            if ($(this).is(":checked")) {
+                $(this).closest(".radio-label").css("background-color", "black");
+                $(this).closest(".radio-label").css("border", "3px solid black");
+                $(this).closest(".radio-label").find("span").css("color", "white");
+            }
+        });
+    });
+    function increment() {
+        var input = document.getElementById("quantity-input");
+        if (input.value < input.max) {
+            input.stepUp();
+        }
+        updateButtonVisibility();
+    }
+
+    function decrement() {
+        var input = document.getElementById("quantity-input");
+        if (input.value > input.min) {
+            input.stepDown();
+        }
+        updateButtonVisibility();
+    }
+
+    function updateButtonVisibility() {
+        var input = document.getElementById("quantity-input");
+        var minusButton = document.querySelector(".number-input button.minus");
+        var plusButton = document.querySelector(".number-input button.plus");
+
+        if (input.value == input.min) {
+            minusButton.style.visibility = "hidden";
+        } else {
+            minusButton.style.visibility = "visible";
+        }
+
+        if (input.value == input.max) {
+            plusButton.style.visibility = "hidden";
+        } else {
+            plusButton.style.visibility = "visible";
+        }
+    }
+
+    updateButtonVisibility(); // Викликаємо для ініціалізації видимості кнопок
+</script>
+
+<div class="row" style="margin-top:100px;">
+    <div class="col-md-7">
+        <div class="row">           
+            @for (int i = 0; i < Model.Photos.Count; i += 2)
+            {
+                <div class="col-md-6" style="padding: 0;">
+                    <img src="data:image/jpeg;base64, @Convert.ToBase64String(photoList[i].PhotoData)"
+                            class="d-block w-100"
+                            data-toggle="modal"
+                            data-target="#myModal"
+                            data-slide-to="@i" />
+                </div>
+                @if (i + 1 < Model.Photos.Count)
+                {
+                    <div class="col-md-6" style="padding: 0;">
+                        <img src="data:image/jpeg;base64, @Convert.ToBase64String(photoList[i + 1].PhotoData)"
+                                class="d-block w-100"
+                                data-toggle="modal"
+                                data-target="#myModal"
+                                data-slide-to="@i + 1" />
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="col-md-5" style="padding:30px;">
+        <div>
+            <nav aria-label="breadcrumb" style="font-size:18px;">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" style="color: black; text-decoration: none;">Products</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.ProductTypeName</li>
+                </ol>
+            </nav>
+            <p style="font-size: 55px; margin-top: 100px">@(Model.ProductTypeName)</p>
+            <p style="font-size: 35px;">@Model.ProductTypeDescription</p>
+            <form method="post" asp-controller="Product" asp-action="ProductForm">
+                <div class="text-center"> 
+                    <input type="hidden" name="productTypeId" value="@Model.ProductTypeId" />
+                    <input type="hidden" name="jewelryTypeId" value="@Model.JewelryTypeId" />
+                    <p type="hidden" id="additionalSizeCost" value="@Model.AdditionalSizeCost" />
+                    <p type="hidden" id="additionalWorkCost" value="@Model.AdditionalWorkCost" />
+
+                    @if (Model.JewelryType.Sizes.Count != 0)
+                    {
+                        RenderDropdown(Html, "Find Your " + Model.JewelryType.JewelryTypeName + "Size", "size",
+                        Model.JewelryType.Sizes.Select(s => new SelectListItem { Value = s.SizeId.ToString(), Text = s.SizeName }).ToList(),
+                        Model.JewelryType.Sizes.Select(s => new SelectListItem { Value = s.SizeVolume.ToString() }).ToList(),
+                        Model.JewelryType.Sizes.First().SizeId.ToString());
+                    }
+                    @if (Model.StoneWeights.Count != 0)
+                    {
+                        RenderDropdown(Html, "Find Your Stone Weight", "weight",
+                        Model.StoneWeights.Select(w => new SelectListItem { Value = w.StoneWeightId.ToString(), Text = w.StonesWeights.ToString() }).ToList(),
+                        Model.StoneWeights.Select(w => new SelectListItem { Value = w.StonesWeights.ToString() }).ToList(),
+                        Model.StoneWeights.First().StoneWeightId.ToString());
+                    }
+
+                    @if (Model.Materials.Count != 0)
+                    {
+                        var sortedMaterials = Model.Materials.OrderBy(m => m.PriceForGram).ToList();
+                        RenderDropdown(Html, "Find Your Material", "material",
+                        sortedMaterials.Select(m => new SelectListItem { Value = m.MaterialId.ToString(), Text = m.MaterialName }).ToList(),
+                        sortedMaterials.Select(p => new SelectListItem { Value = p.PriceForGram.ToString() }).ToList(),
+                        sortedMaterials.First().MaterialId.ToString());
+                    }
+
+                    @if (Model.PreciousStones.Count != 0)
+                    {
+                        var sortedPreciousStones = Model.PreciousStones.OrderBy(p => p.PriceForCarat).ToList();
+                        RenderDropdown(Html, "Find Your Stones", "preciousStones",
+                        sortedPreciousStones.Select(p => new SelectListItem { Value = p.PreciousStoneId.ToString(), Text = p.PreciousStoneName }).ToList(),
+                        sortedPreciousStones.Select(p => new SelectListItem { Value = p.PriceForCarat.ToString() }).ToList(),
+                        sortedPreciousStones.First().PreciousStoneId.ToString());
+                    }
+
+                    @functions {
+                        public void RenderDropdown(IHtmlHelper<ProductsType> htmlHelper, string title, string name, List<SelectListItem> items, List<SelectListItem> pricevalue, string selectedValue)
+                        {
+                            <div class="dropdown" id="dropdown-@name">
+                                <p class="dropdown-trigger">
+                                    @title
+                                    <span class="arrow">&#9660;</span>
+                                </p>
+                                <div class="dropdown-content">
+                                    <div class="radio-container" id="@title">
+                                        @for (int i = 0; i < items.Count; i++)
+                                        {
+                                            <label for="@name-@items[i].Value" class="radio-label">
+                                                <input type="radio" id="@name-@items[i].Value" name="@name" value=@items[i].Value pricevalue="@pricevalue[i].Value" @(items[i].Value == selectedValue ? "checked" : "")>
+                                                <div style="display: none">@pricevalue[i].Value</div>
+                                                <span styl>@items[i].Text</span>
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="row" style="padding:15px; margin-top: 15px; margin-bottom: 15px;">
+                    <div class="col-md-6" style="display: flex; justify-content: start; align-items: center;">
+                        <h3 style="margin: 0;">Quantity</h3>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-end">
+                        <div class="number-input">
+                            <button onclick="decrement()" class="minus" type="button"></button>
+                            <input class="quantity" min="1" max="5" name="quantity" value="2" type="number" id="quantity-input" readonly>
+                            <button onclick="increment()" class="plus" type="button"></button>
+                        </div>
+                    </div>
+                    <h2>
+                        Price :
+                        <input id="totalPrice" name="totalPrice" type="text" style="display: none">
+                        <span id="displayPrice"></span>
+                    </h2>
+                </div>              
+                <button type="submit" class="buy-button"> 
+                    Add to Cart
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    var dropdowns = document.querySelectorAll('.dropdown');
+
+    dropdowns.forEach(function (dropdown) {
+        var radioInputs = dropdown.querySelectorAll('input[type="radio"]');
+
+        radioInputs.forEach(function (radioInput) {
+            radioInput.addEventListener("change", function () {
+                calculateTotalPrice();
+            });
+        });
+    });
+
+
+    function calculateTotalPrice() {
+        var sizeInput = document.querySelector('input[name="size"]:checked');
+        var weightInput = document.querySelector('input[name="weight"]:checked');
+        var materialInput = document.querySelector('input[name="material"]:checked');
+        var stoneInput = document.querySelector('input[name="preciousStones"]:checked');
+        var additionalSizeCostInput = document.getElementById("additionalSizeCost");
+        var additionalWorkCostInput = document.getElementById("additionalWorkCost");
+
+        var sizePrice = sizeInput ? parseFloat(sizeInput.getAttribute("pricevalue").replace(',', '.')) : 0;
+        var weightPrice = weightInput ? parseFloat(weightInput.getAttribute("pricevalue").replace(',', '.')) : 0;
+        var materialPrice = materialInput ? parseFloat(materialInput.getAttribute("pricevalue").replace(',', '.')) : 0;
+        var stonePrice = stoneInput ? parseFloat(stoneInput.getAttribute("pricevalue").replace(',', '.')) : 0;
+        var additionalSizeCost = additionalSizeCostInput ? parseFloat(additionalSizeCostInput.getAttribute("value").replace(',', '.')) : 0;
+        var additionalWorkCost = additionalWorkCostInput ? parseFloat(additionalWorkCostInput.getAttribute("value").replace(',', '.')) : 0;
+
+        var totalPrice = (sizePrice * materialPrice + stonePrice * weightPrice) + additionalSizeCost + additionalWorkCost;
+
+        document.getElementById("totalPrice").value = totalPrice;
+        var formattedTotalPrice = formatCurrency(totalPrice);
+        document.getElementById("displayPrice").textContent = formattedTotalPrice;
+    }
+
+    function formatCurrency(value) {
+        // You can customize this function based on your currency formatting requirements
+        return "$" + value.toFixed(2);
+    }
+
+    // Initial calculation
+    calculateTotalPrice();
+</script>
